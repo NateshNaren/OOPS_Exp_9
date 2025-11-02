@@ -1,0 +1,53 @@
+import java.io.*;
+
+public class BankTransaction {
+    public static void main(String[] args) {
+
+        String inputFile = "E:\\OOPS_LAB\\Transactions.txt";
+        String outputFile = "E:\\OOPS_LAB\\Summary.txt";
+
+        int successCount = 0;
+        int failCount = 0;
+
+        // Read the transaction file
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 4) {
+                    String status = parts[3].trim();
+
+                    if (status.equalsIgnoreCase("SUCCESS")) {
+                        successCount++;
+                    } else if (status.equalsIgnoreCase("FAILED")) {
+                        failCount++;
+                    }
+                }
+            }
+
+            System.out.println("File read successfully!");
+            System.out.println("Successful Transactions: " + successCount);
+            System.out.println("Failed Transactions: " + failCount);
+
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+
+        // Write summary report to output file
+        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+            String summary =
+                    "Transaction Summary:\n" +
+                    "---------------------\n" +
+                    "Total Transactions: " + (successCount + failCount) + "\n" +
+                    "Successful Transactions: " + successCount + "\n" +
+                    "Failed Transactions: " + failCount + "\n";
+
+            fos.write(summary.getBytes());
+            System.out.println("Summary written to " + outputFile);
+
+        } catch (IOException e) {
+            System.out.println("Error writing file: " + e.getMessage());
+        }
+    }
+}
